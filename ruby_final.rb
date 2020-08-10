@@ -14,7 +14,7 @@ class Wikipedia
     @link = link
     @count = 0
     @path = []
-    if @choice == 1
+    if @choice == 0
       @@all << self
     end
   end
@@ -53,39 +53,66 @@ class Wikipedia
     i = 0
     fin_elem = nil
     uri = Nokogiri::HTML(open(link))
+    tds = []
+    uri.css('td').each do |td|
+        td.css('p').each do |pp|
+          tds << pp
+        end 
+      end 
     uri.css('p').each do |p|
       eyes = []
+      as = [] 
+      p.css('a').each do |a|
+        as << a 
+      end 
       p.css('i').each do |i|
         eyes << i
       end
       words = p.text.split('')
-      lks = {}
-      p.css('a').each do |lk|
-        lks[lk.text] = lk unless (lk.text.include?('[') || (lk['title'].include?('wiktionary' || 'Category') if lk['title']) || (lk['class'] == 'image' if lk['class']))
-      end
       i = 0
-      text = ''
-      words.each do |char|
-        if char == '(' || char == '['
-          i += 1
-        elsif char == ')' || char == ']'
-          i -= 1
+        text = ''
+        bad_text = ''
+        words.each do |char|
+          if char == '(' || char == '['
+            i += 1
+          end 
+          if i == 0
+            text += char
+          elsif i == 1 
+            bad_text += char 
+          end
+          if char == ')' || char == ']'
+            i -= 1
+          end 
         end
-        if i == 0
-          text += char
+        esas = []
+        as.each do |a|
+          if !bad_text.include?(a.text)
+            esas << a 
+          end 
+        end 
+      if !tds.include?(p)
+        lks = {}
+        esas.each do |lk|
+          lks[lk.text.gsub(/[^a-zA-Z0-9]/," ")] = lk unless (lk.text.include?('[') || (lk['title'].include?('wiktionary' || 'Category') if lk['title']) || (lk['class'] == 'image' if lk['class']))
         end
-      end
-      lks.each do |k,v|
-        if text.include?(k)
+        lks.each do |k,v|
+          if text.include?(k)
           if fin_elem == nil
             fin_elem = v['href'] unless (v['title'] == "About this sound" || eyes.include?(v))
+            end
           end
         end
+        
+        
+        if fin_elem.to_s.strip.empty?
+          fin_elem = nil
+        end
+        
+        
+        
       end
-      if fin_elem.to_s.strip.empty?
-        fin_elem = nil
-      end
-    end
+    end 
 
     if fin_elem == nil || !fin_elem.include?('wiki')
       @@fails +=1
@@ -137,9 +164,9 @@ end
 def getters
   puts "Hello! Welcome to Wikispeedia a la Zach!"
   i = 0 
-  while i <= 100000000
-    i +=1 
-  end 
+  # while i <= 100000000
+  #   i +=1 
+  # end 
   puts "Do you want to play?"
   puts "Input 'y' to play."
   puts "Input 'n' to quit."
@@ -196,7 +223,7 @@ def getters
         end
         int = int.to_i
         i = 0
-        while i <= int
+        while i < int
           tryal = Wikipedia.new("https://en.wikipedia.org/wiki/Special:Random",0)
           tryal.runner(tryal.link)
           i += 1
