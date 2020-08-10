@@ -136,6 +136,10 @@ end
 
 def getters
   puts "Hello! Welcome to Wikispeedia a la Zach!"
+  i = 0 
+  while i <= 100000000000000000000000000
+    i +=1 
+  end 
   puts "Do you want to play?"
   puts "Input 'y' to play."
   puts "Input 'n' to quit."
