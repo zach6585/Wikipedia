@@ -1,0 +1,14 @@
+In this project, I scrape Wikipedia for links to find out if, by checking the information about the page tied to the very first non-italicized and non-parethecized link 
+using Nokogiri and Open URI, that page is the page for Science. If it isn't it recurses.
+
+I have two structures with which one would go about finding the page. The first is with a chosen starting page. For example, it will prompt you to type in a word and then it 
+will go to that word's Wikipedia page. 
+
+The second is a loop of n random pages, where n is determined by the user. This will run through the class method "runner" n times, documenting if a loop is a success or a failure.
+Once this ends, it gives you a percentage of successful runs. 
+
+The user will never have to create a class object or call a class method directly. The code has a CLI setup that allows for all of this work to be done behind the scences 
+dependent on their inputs to the gets methods. It determines the paths to take based on basic conditional statements. 
+
+Finally, it has a system set in place so that the user would have the opportunity to go on forever assuming that's what they would want, as well as exit, if that is what they want 
+instead. 
